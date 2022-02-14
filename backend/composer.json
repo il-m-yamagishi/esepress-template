@@ -1,0 +1,42 @@
+{
+    "name": "esepress/esepress-skeleton",
+    "description": "Copy of WordPress",
+    "license": "Apache License 2.0",
+    "authors": [
+        {
+            "name": "Masaru Yamagishi",
+            "email": "yamagishi.iloop@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../esepress/backend"
+        }
+    ],
+    "require": {
+        "php": ">=8.1.0",
+        "esepress/esepress": "dev-main",
+        "laminas/laminas-diactoros": "^2.8",
+        "psr/http-message": "^1.0",
+        "psr/http-server-handler": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "serve": "@php -S localhost:8080 -t public"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

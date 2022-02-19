@@ -14,23 +14,18 @@ use Laminas\Diactoros\StreamFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Semplice\Contracts\Routing\IRouteResolver;
+use Semplice\Http\Middlewares\ContentLengthAwareMiddleware;
+use Semplice\Http\Middlewares\ContentTypeAwareMiddleware;
+use Semplice\Http\RequestHandlerPipeline;
+use Semplice\Routing\OpenAPIRouteResolver;
+use Semplice\Routing\RouteRequestHandler;
 use Throwable;
 
 final class HttpKernel
 {
     public static function invoke(): never
     {
-        $handler = new class () implements RequestHandlerInterface {
-            public function handle(ServerRequestInterface $request): ResponseInterface
-            {
-                $result = '{"ok":true}';
-                return (new Response())
-                    ->withHeader('Content-Length', strlen($result))
-                    ->withHeader('Content-Type', 'application/json; charset=UTF-8')
-                    ->withBody((new StreamFactory())->createStream($result));
-            }
-        };
-
         $error_handler = new class () implements IHttpErrorHandler {
             public function handleError(ServerRequestInterface $request, Throwable $throwable): ResponseInterface
             {
@@ -42,7 +37,29 @@ final class HttpKernel
 
         /** @todo Container registration automation */
         $container = new Container();
-        $container->instance(RequestHandlerInterface::class, $handler);
+
+        $openapi = [
+            'paths' => [
+                '/' => [
+                    'get' => [
+                        'operationId' => 'Index',
+                        'x-invoker' => \App\Index\IndexHandler::class,
+                    ],
+                ],
+            ],
+        ];
+        $openapi_route_resolver = new OpenAPIRouteResolver($openapi);
+        $container->instance(IRouteResolver::class, $openapi_route_resolver);
+        $handlers = [
+            ContentLengthAwareMiddleware::class,
+            ContentTypeAwareMiddleware::class,
+            RouteRequestHandler::class,
+        ];
+        $pipeline = new RequestHandlerPipeline(
+            $handlers,
+            fn (string $handler) => $container->get($handler),
+        );
+        $container->instance(RequestHandlerInterface::class, $pipeline);
         $container->instance(IHttpErrorHandler::class, $error_handler);
         $container->instance(ServerRequestInterface::class, $request);
 

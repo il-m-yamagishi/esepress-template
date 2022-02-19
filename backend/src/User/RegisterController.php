@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\User;
 
-use Semplice\Routing\Get;
-
 class RegisterController
 {
     /**
@@ -15,8 +13,7 @@ class RegisterController
      * @param RegisterTx $tx
      * @return RegisterResponse
      */
-    #[Get('/')]
-    public function register(RegisterRequest $request, RegisterTx $tx): RegisterResponse
+    public function __invoke(RegisterRequest $request, RegisterTx $tx): RegisterResponse
     {
         $params = $request->all();
         $result = $tx(

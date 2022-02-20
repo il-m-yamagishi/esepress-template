@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+$logger = (new App\Bootstrap\LoggerFactory())->createLogger('Semplice CLI');
+$exit_code = App\Bootstrap\CLIKernel::invoke($logger);
+
+exit($exit_code);

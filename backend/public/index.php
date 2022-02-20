@@ -4,4 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-App\Core\HttpKernel::invoke();
+$logger = (new App\Bootstrap\LoggerFactory())->createLogger('Semplice CLI');
+$request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
+
+App\Bootstrap\HttpKernel::invoke($logger, $request);

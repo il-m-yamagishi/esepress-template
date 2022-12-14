@@ -1,0 +1,15 @@
+openapi: '3.1.0'
+info:
+  title: Semplice the modern web framework template
+  version: 0.0.1
+paths:
+  /:
+    get:
+      operationId: Index
+      responses:
+        200:
+          description: Index page
+          content:
+            text/html:
+              schema:
+                type: string

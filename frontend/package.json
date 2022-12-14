@@ -1,0 +1,10 @@
+{
+  "name": "semplice-frontend-template",
+  "version": "0.0.1",
+  "description": "Simple modern web framework",
+  "private": true,
+  "scripts": {
+  },
+  "author": "Masaru Yamagishi <yamagishi.iloop@gmail.com>",
+  "license": "Apache-2.0"
+}
